@@ -18,18 +18,29 @@ let cached: SupabaseClient | null = null;
 export function supabaseAdmin(): SupabaseClient {
   if (cached) return cached;
 
-  // The Vercel Supabase integration sets both NEXT_PUBLIC_SUPABASE_URL and
-  // SUPABASE_URL, so accept either rather than depending on which one lands.
+  // Accept whichever variable name is present. The Vercel Supabase integration
+  // sets several, and marketplace integrations sometimes prefix them again with
+  // the integration name, so check the known spellings rather than assume one.
   const url =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    process.env.NEXT_PUBLIC_SUPABASE_URL ??
+    process.env.SUPABASE_URL ??
+    process.env.SUPABASE_NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.SUPABASE_SECRET_KEY ??
+    process.env.SUPABASE_SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceKey) {
-    const missing = [
-      !url && "NEXT_PUBLIC_SUPABASE_URL (or SUPABASE_URL)",
-      !serviceKey && "SUPABASE_SERVICE_ROLE_KEY",
-    ].filter(Boolean);
-    throw new Error(`Missing Supabase credentials: ${missing.join(", ")}.`);
+    // List the Supabase-ish names that *are* set. Names only, never values, and
+    // this reaches the server log rather than the browser. Saves guessing which
+    // spelling an integration used if this ever breaks again.
+    const seen = Object.keys(process.env)
+      .filter((k) => k.toUpperCase().includes("SUPABASE"))
+      .sort()
+      .join(", ");
+    throw new Error(
+      `Missing Supabase credentials. Supabase-ish vars present: [${seen || "none"}]`,
+    );
   }
 
   cached = createClient(url, serviceKey, {
