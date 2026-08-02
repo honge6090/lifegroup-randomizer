@@ -1,9 +1,9 @@
 import Link from "next/link";
+import NscLogo from "./NscLogo";
 
 /**
  * Sticky header mirroring the NSC Preflight one: same height, same border and
- * blur, and the same logo treatment. The logo file is white artwork on
- * transparency, so `brightness-0` flips it to solid black for a light page.
+ * blur, and the mark at the same size.
  */
 export default function SiteHeader() {
   return (
@@ -13,8 +13,7 @@ export default function SiteHeader() {
           href="/"
           className="flex items-center gap-2 font-semibold tracking-tight"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="NSC" className="h-5 w-auto brightness-0" />
+          <NscLogo className="h-5 w-5 text-foreground" />
           Life Group Bungae
         </Link>
 
