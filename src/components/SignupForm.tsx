@@ -12,7 +12,6 @@ export default function SignupForm() {
     initialState,
   );
   const formRef = useRef<HTMLFormElement>(null);
-  const firstFieldRef = useRef<HTMLInputElement>(null);
 
   // Clear the fields once a submission lands so the next person can go straight in.
   useEffect(() => {
@@ -76,7 +75,6 @@ export default function SignupForm() {
     >
       <div className="space-y-5">
         <Field
-          ref={firstFieldRef}
           name="first_name"
           label="First name"
           autoComplete="given-name"
@@ -105,12 +103,10 @@ export default function SignupForm() {
 }
 
 function Field({
-  ref,
   name,
   label,
   autoComplete,
 }: {
-  ref?: React.Ref<HTMLInputElement>;
   name: string;
   label: string;
   autoComplete: string;
@@ -124,7 +120,6 @@ function Field({
         {label}
       </label>
       <input
-        ref={ref}
         id={name}
         name={name}
         type="text"

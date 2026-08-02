@@ -18,13 +18,18 @@ let cached: SupabaseClient | null = null;
 export function supabaseAdmin(): SupabaseClient {
   if (cached) return cached;
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // The Vercel Supabase integration sets both NEXT_PUBLIC_SUPABASE_URL and
+  // SUPABASE_URL, so accept either rather than depending on which one lands.
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceKey) {
-    throw new Error(
-      "Missing Supabase credentials. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
-    );
+    const missing = [
+      !url && "NEXT_PUBLIC_SUPABASE_URL (or SUPABASE_URL)",
+      !serviceKey && "SUPABASE_SERVICE_ROLE_KEY",
+    ].filter(Boolean);
+    throw new Error(`Missing Supabase credentials: ${missing.join(", ")}.`);
   }
 
   cached = createClient(url, serviceKey, {
