@@ -1,21 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces } from "next/font/google";
+import { Geist } from "next/font/google";
+import SiteHeader from "@/components/SiteHeader";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  display: "swap",
-  weight: ["400", "600", "700"],
-});
+// Same typeface as NSC Preflight.
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
-  title: "Life Groups",
+  title: "Life Group Bungae",
   description: "Sign up and get sorted into a life group.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf7f2",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -24,8 +21,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={fraunces.variable}>
-      <body className="antialiased">{children}</body>
+    <html lang="en" className={geist.variable}>
+      <body className="bg-background text-foreground antialiased">
+        <SiteHeader />
+        {children}
+      </body>
     </html>
   );
 }

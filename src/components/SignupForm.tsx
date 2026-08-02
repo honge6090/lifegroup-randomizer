@@ -20,12 +20,12 @@ export default function SignupForm() {
 
   if (state.status === "success") {
     return (
-      <div className="rounded-2xl border border-line bg-card p-8 text-center shadow-[0_1px_3px_rgba(33,29,24,0.06)]">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-soft">
+      <div className="rounded-xl border border-border bg-card p-8 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary">
           <svg
             viewBox="0 0 24 24"
             fill="none"
-            className="h-7 w-7 text-accent"
+            className="h-6 w-6 text-primary-foreground"
             aria-hidden="true"
           >
             <path
@@ -38,28 +38,25 @@ export default function SignupForm() {
           </svg>
         </div>
 
-        <h2 className="mt-5 font-display text-2xl font-semibold">
+        <h2 className="mt-5 text-xl font-semibold tracking-tight">
           You&rsquo;re in, {state.firstName}.
         </h2>
-        <p className="mx-auto mt-2 max-w-xs text-[15px] leading-relaxed text-muted">
-          We&rsquo;ll sort everyone into groups once sign-ups close. Check back
-          on the groups page to find yours.
+        <p className="mx-auto mt-2 max-w-xs text-[15px] leading-relaxed text-muted-foreground">
+          We&rsquo;ll sort everyone into groups once sign-ups close. Check the
+          groups page to find yours.
         </p>
 
         <Link
           href="/groups"
-          className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-ink px-5 py-3.5 text-[15px] font-semibold text-paper transition-opacity hover:opacity-90"
+          className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
           See the groups
         </Link>
 
         <button
           type="button"
-          onClick={() => {
-            formRef.current?.reset();
-            window.location.reload();
-          }}
-          className="mt-3 w-full rounded-xl px-5 py-2.5 text-[15px] font-medium text-muted transition-colors hover:text-ink"
+          onClick={() => window.location.reload()}
+          className="mt-2 w-full rounded-lg px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           Sign up someone else
         </button>
@@ -71,21 +68,17 @@ export default function SignupForm() {
     <form
       ref={formRef}
       action={formAction}
-      className="rounded-2xl border border-line bg-card p-6 shadow-[0_1px_3px_rgba(33,29,24,0.06)] sm:p-8"
+      className="rounded-xl border border-border bg-card p-6 sm:p-7"
     >
-      <div className="space-y-5">
-        <Field
-          name="first_name"
-          label="First name"
-          autoComplete="given-name"
-        />
+      <div className="space-y-4">
+        <Field name="first_name" label="First name" autoComplete="given-name" />
         <Field name="last_name" label="Last name" autoComplete="family-name" />
       </div>
 
       {state.status === "error" && (
         <p
           role="alert"
-          className="mt-5 rounded-xl bg-accent-soft px-4 py-3 text-[14px] leading-relaxed text-accent"
+          className="mt-4 rounded-lg border border-destructive/25 bg-destructive-soft px-4 py-3 text-sm leading-relaxed text-destructive"
         >
           {state.message}
         </p>
@@ -94,7 +87,7 @@ export default function SignupForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-7 w-full rounded-xl bg-accent px-5 py-4 text-base font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-6 w-full rounded-lg bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {pending ? "Adding you…" : "Count me in"}
       </button>
@@ -113,10 +106,7 @@ function Field({
 }) {
   return (
     <div>
-      <label
-        htmlFor={name}
-        className="mb-2 block text-[13px] font-semibold tracking-wide text-muted uppercase"
-      >
+      <label htmlFor={name} className="mb-2 block text-sm font-medium">
         {label}
       </label>
       <input
@@ -127,7 +117,7 @@ function Field({
         maxLength={60}
         autoComplete={autoComplete}
         // 16px minimum keeps iOS from zooming the page on focus.
-        className="w-full rounded-xl border border-line bg-paper px-4 py-3.5 text-base text-ink transition-colors placeholder:text-muted/60 focus:border-accent focus:bg-card focus:outline-none"
+        className="w-full rounded-lg border border-input bg-background px-3.5 py-3 text-base transition-colors focus:border-ring focus:outline-none"
       />
     </div>
   );
