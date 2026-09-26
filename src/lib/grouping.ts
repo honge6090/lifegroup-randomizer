@@ -1,22 +1,27 @@
 /**
- * Group-splitting rules for life groups.
+ * Group-splitting rules for Haven dinner tables.
  *
  * Everything here is pure so it can be tested without a database.
- * The target is five per group, falling back to four, and the sizes are
- * always spread as evenly as possible so nobody ends up in a group of one.
+ * The target is four per table. When the headcount does not divide evenly the
+ * leftover is absorbed by turning some tables into threes, so nobody eats in a
+ * pair or alone.
  */
 
-export const TARGET_GROUP_SIZE = 5;
+export const TARGET_GROUP_SIZE = 4;
 
 /**
  * Work out how big each group should be for a given number of members.
  *
- * We make ceil(n / 5) groups and then hand out members as evenly as we can.
- * That caps every group at five and keeps the sizes within one of each other,
- * so 13 people become 5/4/4 rather than 5/5/3.
+ * We make ceil(n / 4) groups and then hand out members as evenly as we can.
+ * That caps every group at four and keeps the sizes within one of each other,
+ * so 13 people become 4/3/3/3 rather than 4/4/4/1.
+ *
+ * Five is the one headcount that cannot be split into fours and threes, so it
+ * stays together as a single table instead of becoming 3/2.
  */
 export function partitionSizes(memberCount: number): number[] {
   if (memberCount <= 0) return [];
+  if (memberCount === 5) return [5];
 
   const groupCount = Math.ceil(memberCount / TARGET_GROUP_SIZE);
   const base = Math.floor(memberCount / groupCount);

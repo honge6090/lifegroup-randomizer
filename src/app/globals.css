@@ -1,49 +1,92 @@
 @import "tailwindcss";
 
 /*
- * Theme lifted from the NSC Preflight app so the two sit together: the shadcn
- * neutral palette (fully achromatic, no hue), Geist as the sans, and the same
- * 0.625rem radius scale.
+ * Theme lifted from the Haven bulletin: ruled notebook paper, a red margin
+ * line, the warm orange of the HAVEN lettering and a soft brown-black ink.
+ * UhBee DongKyung (the bulletin's hand-lettered face) is used for headings;
+ * body copy stays in Geist with a Korean system fallback so forms and long
+ * names stay easy to read.
  */
 @theme {
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.145 0 0);
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.145 0 0);
-  --color-primary: oklch(0.205 0 0);
-  --color-primary-foreground: oklch(0.985 0 0);
-  --color-secondary: oklch(0.97 0 0);
-  --color-secondary-foreground: oklch(0.205 0 0);
-  --color-muted: oklch(0.97 0 0);
-  --color-muted-foreground: oklch(0.556 0 0);
-  --color-accent: oklch(0.97 0 0);
-  --color-accent-foreground: oklch(0.205 0 0);
-  --color-destructive: oklch(0.577 0.245 27.325);
-  --color-destructive-soft: oklch(0.958 0.024 27.325);
-  --color-border: oklch(0.922 0 0);
-  --color-input: oklch(0.922 0 0);
-  --color-ring: oklch(0.708 0 0);
+  --color-background: #fffdf8;
+  --color-foreground: #332c2b;
+  --color-card: #ffffff;
+  --color-card-foreground: #332c2b;
+  --color-primary: #f2a21e;
+  --color-primary-foreground: #332c2b;
+  --color-primary-soft: #fdf1dc;
+  --color-secondary: #f6f2ea;
+  --color-secondary-foreground: #332c2b;
+  --color-muted: #f6f2ea;
+  --color-muted-foreground: #7a716e;
+  --color-accent: #fdf1dc;
+  --color-accent-foreground: #332c2b;
+  --color-destructive: #d63a2f;
+  --color-destructive-soft: #fdecea;
+  --color-border: #e6dfd3;
+  --color-input: #ddd5c8;
+  --color-ring: #f2a21e;
+  --color-rule: #dcdcdc;
+  --color-margin: #ee8f94;
 
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
 
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-geist), "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-hand: var(--font-uhbee), var(--font-sans);
 }
 
 html {
   -webkit-text-size-adjust: 100%;
 }
 
+/*
+ * Notebook paper, like the bulletin: evenly ruled grey lines with a red margin
+ * down the left. Both are background layers so they never catch clicks.
+ */
 body {
+  --rule-gap: 2.5rem;
+  --margin-x: 0.5rem;
   background-color: var(--color-background);
+  background-image:
+    linear-gradient(
+      to right,
+      transparent calc(var(--margin-x) - 1px),
+      var(--color-margin) calc(var(--margin-x) - 1px),
+      var(--color-margin) var(--margin-x),
+      transparent var(--margin-x)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--rule-gap) - 1px),
+      var(--color-rule) calc(var(--rule-gap) - 1px),
+      var(--color-rule) var(--rule-gap)
+    );
+  background-attachment: local;
   color: var(--color-foreground);
   font-family: var(--font-sans);
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  body {
+    --margin-x: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    --margin-x: max(3.5rem, calc(50vw - 30rem));
+  }
 }
 
 /* Keep focus obvious for anyone tabbing through on a laptop or projector. */

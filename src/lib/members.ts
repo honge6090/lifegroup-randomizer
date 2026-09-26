@@ -56,10 +56,10 @@ export async function addMember(
   const last = cleanName(lastName);
 
   if (!first || !last) {
-    return { ok: false, message: "Please enter both your first and last name." };
+    return { ok: false, message: "이름과 성을 모두 입력해 주세요." };
   }
   if (first.length > 60 || last.length > 60) {
-    return { ok: false, message: "That name is longer than we can store." };
+    return { ok: false, message: "이름이 너무 길어요." };
   }
 
   const existing = await listMembers();
@@ -67,7 +67,7 @@ export async function addMember(
   if (existing.some((m) => nameKey(m.first_name, m.last_name) === key)) {
     return {
       ok: false,
-      message: `Looks like ${first} is already signed up. You're all set.`,
+      message: `${first}님은 이미 등록되어 있어요. 조 확인 페이지에서 확인해 주세요.`,
     };
   }
 
@@ -75,7 +75,7 @@ export async function addMember(
     .from(TABLE)
     .insert({ first_name: first, last_name: last, group_number: null });
 
-  if (error) return { ok: false, message: `Could not save: ${error.message}` };
+  if (error) return { ok: false, message: `저장하지 못했어요: ${error.message}` };
   return { ok: true, firstName: first };
 }
 
@@ -91,7 +91,7 @@ export async function randomizeGroups(): Promise<{
 }> {
   const members = await listMembers();
   if (members.length === 0) {
-    return { ok: false, message: "No one has signed up yet." };
+    return { ok: false, message: "아직 등록한 사람이 없어요." };
   }
 
   const assignments = new Map(
@@ -105,15 +105,13 @@ export async function randomizeGroups(): Promise<{
 
   const { error } = await supabaseAdmin().from(TABLE).upsert(updated);
   if (error) {
-    return { ok: false, message: `Could not save groups: ${error.message}` };
+    return { ok: false, message: `조를 저장하지 못했어요: ${error.message}` };
   }
 
   const groupCount = new Set(assignments.values()).size;
   return {
     ok: true,
-    message: `Sorted ${members.length} ${
-      members.length === 1 ? "person" : "people"
-    } into ${groupCount} ${groupCount === 1 ? "group" : "groups"}.`,
+    message: `${members.length}명을 ${groupCount}개 조로 나눴어요.`,
   };
 }
 
@@ -126,14 +124,14 @@ export async function clearAllMembers(): Promise<{
     .delete()
     .neq("id", "00000000-0000-0000-0000-000000000000");
 
-  if (error) return { ok: false, message: `Could not clear: ${error.message}` };
-  return { ok: true, message: "All submissions cleared." };
+  if (error) return { ok: false, message: `삭제하지 못했어요: ${error.message}` };
+  return { ok: true, message: "모두 삭제했어요." };
 }
 
 export async function deleteMember(
   id: string,
 ): Promise<{ ok: boolean; message: string }> {
   const { error } = await supabaseAdmin().from(TABLE).delete().eq("id", id);
-  if (error) return { ok: false, message: `Could not remove: ${error.message}` };
-  return { ok: true, message: "Removed." };
+  if (error) return { ok: false, message: `삭제하지 못했어요: ${error.message}` };
+  return { ok: true, message: "삭제했어요." };
 }
