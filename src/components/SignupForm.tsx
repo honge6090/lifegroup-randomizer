@@ -20,7 +20,7 @@ export default function SignupForm() {
 
   if (state.status === "success") {
     return (
-      <div className="rounded-xl border border-border bg-card p-8 text-center">
+      <div className="rounded-xl border border-border bg-card p-8 text-center shadow-sm">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary">
           <svg
             viewBox="0 0 24 24"
@@ -38,19 +38,19 @@ export default function SignupForm() {
           </svg>
         </div>
 
-        <h2 className="mt-5 text-xl font-semibold tracking-tight">
-          You&rsquo;re in, {state.firstName}.
+        <h2 className="mt-5 font-hand text-2xl">
+          {state.firstName}님, 환영해요!
         </h2>
-        <p className="mx-auto mt-2 max-w-xs text-[15px] leading-relaxed text-muted-foreground">
-          We&rsquo;ll sort everyone into groups once sign-ups close. Check the
-          groups page to find yours.
+        <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-muted-foreground">
+          등록이 끝나면 조를 뽑을게요. 조 확인 페이지에서 내 테이블을
+          찾아보세요.
         </p>
 
         <Link
           href="/groups"
-          className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
-          See the groups
+          조 확인하기
         </Link>
 
         <button
@@ -58,7 +58,7 @@ export default function SignupForm() {
           onClick={() => window.location.reload()}
           className="mt-2 w-full rounded-lg px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
-          Sign up someone else
+          다른 사람 등록하기
         </button>
       </div>
     );
@@ -68,11 +68,21 @@ export default function SignupForm() {
     <form
       ref={formRef}
       action={formAction}
-      className="rounded-xl border border-border bg-card p-6 sm:p-7"
+      className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-7"
     >
       <div className="space-y-4">
-        <Field name="first_name" label="First name" autoComplete="given-name" />
-        <Field name="last_name" label="Last name" autoComplete="family-name" />
+        <Field
+          name="first_name"
+          label="이름"
+          hint="First name"
+          autoComplete="given-name"
+        />
+        <Field
+          name="last_name"
+          label="성"
+          hint="Last name"
+          autoComplete="family-name"
+        />
       </div>
 
       {state.status === "error" && (
@@ -87,9 +97,9 @@ export default function SignupForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-6 w-full rounded-lg bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-6 w-full rounded-lg bg-primary px-5 py-3.5 text-base font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {pending ? "Adding you…" : "Count me in"}
+        {pending ? "등록 중…" : "등록하기"}
       </button>
     </form>
   );
@@ -98,16 +108,19 @@ export default function SignupForm() {
 function Field({
   name,
   label,
+  hint,
   autoComplete,
 }: {
   name: string;
   label: string;
+  hint: string;
   autoComplete: string;
 }) {
   return (
     <div>
       <label htmlFor={name} className="mb-2 block text-sm font-medium">
-        {label}
+        {label}{" "}
+        <span className="font-normal text-muted-foreground">{hint}</span>
       </label>
       <input
         id={name}

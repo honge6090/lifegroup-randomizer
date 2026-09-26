@@ -7,35 +7,47 @@ test("no members means no groups", () => {
   assert.deepEqual(partitionSizes(-3), []);
 });
 
-test("small turnouts stay in one group up to five", () => {
+test("small turnouts stay at one table", () => {
   assert.deepEqual(partitionSizes(1), [1]);
   assert.deepEqual(partitionSizes(2), [2]);
   assert.deepEqual(partitionSizes(3), [3]);
   assert.deepEqual(partitionSizes(4), [4]);
+});
+
+test("five stays together rather than splitting into 3 and 2", () => {
   assert.deepEqual(partitionSizes(5), [5]);
 });
 
-test("exact multiples of five split evenly", () => {
-  assert.deepEqual(partitionSizes(10), [5, 5]);
-  assert.deepEqual(partitionSizes(20), [5, 5, 5, 5]);
-  assert.deepEqual(partitionSizes(50), Array(10).fill(5));
+test("exact multiples of four split evenly", () => {
+  assert.deepEqual(partitionSizes(8), [4, 4]);
+  assert.deepEqual(partitionSizes(20), [4, 4, 4, 4, 4]);
+  assert.deepEqual(partitionSizes(48), Array(12).fill(4));
 });
 
-test("remainders spread out instead of leaving a tiny group", () => {
-  assert.deepEqual(partitionSizes(13), [5, 4, 4]);
-  assert.deepEqual(partitionSizes(17), [5, 4, 4, 4]);
-  assert.deepEqual(partitionSizes(23), [5, 5, 5, 4, 4]);
+test("leftovers become tables of three", () => {
+  assert.deepEqual(partitionSizes(6), [3, 3]);
+  assert.deepEqual(partitionSizes(7), [4, 3]);
+  assert.deepEqual(partitionSizes(9), [3, 3, 3]);
+  assert.deepEqual(partitionSizes(10), [4, 3, 3]);
   assert.deepEqual(partitionSizes(11), [4, 4, 3]);
-  assert.deepEqual(partitionSizes(21), [5, 4, 4, 4, 4]);
+  assert.deepEqual(partitionSizes(13), [4, 3, 3, 3]);
+  assert.deepEqual(partitionSizes(23), [4, 4, 4, 4, 4, 3]);
 });
 
-test("never builds a group larger than five", () => {
-  for (let n = 1; n <= 400; n++) {
+test("only ever builds tables of four or three from six people up", () => {
+  for (let n = 6; n <= 400; n++) {
     const sizes = partitionSizes(n);
     assert.ok(
-      sizes.every((s) => s <= 5),
-      `n=${n} produced an oversized group: ${sizes.join(",")}`,
+      sizes.every((s) => s === 3 || s === 4),
+      `n=${n} produced a table that is not 3 or 4: ${sizes.join(",")}`,
     );
+  }
+});
+
+test("uses as many tables of four as possible", () => {
+  for (let n = 6; n <= 400; n++) {
+    const threes = partitionSizes(n).filter((s) => s === 3).length;
+    assert.ok(threes <= 3, `n=${n} made ${threes} tables of three`);
   }
 });
 
@@ -52,16 +64,6 @@ test("sizes never differ by more than one, so no group is stranded", () => {
     assert.ok(
       Math.max(...sizes) - Math.min(...sizes) <= 1,
       `n=${n} is lopsided: ${sizes.join(",")}`,
-    );
-  }
-});
-
-test("nobody is ever left in a group alone once there are four or more", () => {
-  for (let n = 4; n <= 400; n++) {
-    const sizes = partitionSizes(n);
-    assert.ok(
-      Math.min(...sizes) >= 3,
-      `n=${n} stranded someone: ${sizes.join(",")}`,
     );
   }
 });
@@ -98,7 +100,7 @@ test("assignGroups numbers groups from 1 and places everyone once", () => {
   assert.equal(assigned.length, 13);
   assert.deepEqual(
     [...new Set(assigned.map((a) => a.group_number))].sort((x, y) => x - y),
-    [1, 2, 3],
+    [1, 2, 3, 4],
   );
   assert.deepEqual(
     assigned.map((a) => a.id).sort(),
@@ -109,7 +111,7 @@ test("assignGroups numbers groups from 1 and places everyone once", () => {
   for (const a of assigned) {
     counts.set(a.group_number, (counts.get(a.group_number) ?? 0) + 1);
   }
-  assert.deepEqual([...counts.values()].sort((x, y) => y - x), [5, 4, 4]);
+  assert.deepEqual([...counts.values()].sort((x, y) => y - x), [4, 3, 3, 3]);
 });
 
 test("assignGroups handles an empty roster", () => {

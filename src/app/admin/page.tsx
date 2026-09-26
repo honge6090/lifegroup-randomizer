@@ -32,7 +32,7 @@ export default async function AdminPage() {
     width: 720,
     margin: 2,
     errorCorrectionLevel: "M",
-    color: { dark: "#211d18", light: "#ffffff" },
+    color: { dark: "#332c2b", light: "#ffffff" },
   });
 
   return (

@@ -1,8 +1,12 @@
-# Life Group Randomizer
+# Haven Dinner Groups
 
-A small web app for sorting whoever shows up into life groups. Members scan a QR
-code, type their name, and the organizer shuffles everyone into groups of four or
-five.
+A small web app for sorting everyone at Haven (헤이븐 한국어예배) into random dinner
+tables after worship. People scan a QR code, type their name, and the organizer
+shuffles everyone into tables of four, with leftovers seated in threes.
+
+The look follows the Haven bulletin: ruled notebook paper, the orange HAVEN brush
+lettering (`public/haven-wordmark.png`, cut from the bulletin artwork) and the
+UhBee DongKyung hand-lettered face (`src/fonts/`) for headings.
 
 ## Pages
 
@@ -18,14 +22,17 @@ type-to-confirm dialog so it is hard to trigger by accident.
 
 ## How grouping works
 
-The target is five per group, falling back to four. For `n` people the app makes
-`ceil(n / 5)` groups and spreads everyone as evenly as possible, so sizes never
-differ by more than one:
+The target is four per table, with leftovers absorbed into tables of three. For
+`n` people the app makes `ceil(n / 4)` tables and spreads everyone as evenly as
+possible, so every table has four or three people:
 
 ```
-20 → 5,5,5,5     13 → 5,4,4      17 → 5,4,4,4
-23 → 5,5,5,4,4   11 → 4,4,3      7  → 4,3
+8  → 4,4        7  → 4,3        10 → 4,3,3
+11 → 4,4,3      13 → 4,3,3,3    6  → 3,3
 ```
+
+Five is the one count that cannot be split into fours and threes, so it stays as
+a single table of five rather than becoming 3 and 2.
 
 Shuffling is Fisher-Yates seeded from `crypto.getRandomValues`, so every re-roll
 is genuinely different. Re-rolling replaces the previous groups entirely rather
@@ -33,6 +40,9 @@ than topping them up.
 
 The logic lives in [`src/lib/grouping.ts`](src/lib/grouping.ts) as pure
 functions, and is covered by tests in `src/lib/grouping.test.ts`.
+
+Names written in Hangul are shown family name first with no space (김민수);
+other names stay in First Last order. See `src/lib/names.ts`.
 
 ## Setup
 
@@ -59,13 +69,14 @@ into a build error.
 
 ```bash
 npm run dev     # local dev server
-npm test        # grouping unit tests
+npm test        # grouping and name unit tests
 npm run build   # production build
 ```
 
 ## Data
 
-One table, `lifegroup_members`:
+One table, `lifegroup_members` (the name is kept from the original life group
+version so the existing Supabase project keeps working):
 
 | Column         | Type          | Notes                                    |
 | -------------- | ------------- | ---------------------------------------- |
