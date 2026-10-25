@@ -65,6 +65,19 @@ write goes through a Next.js server action using the secret key. The
 `server-only` import in `src/lib/supabase.ts` turns any accidental client import
 into a build error.
 
+### Keeping the database awake
+
+Supabase pauses free projects after about a week without any requests, and a
+paused project makes `/admin` and `/groups` fail with "Could not load
+submissions: fetch failed". Since the app is used about once a week, a Vercel
+cron job (`vercel.json`) calls `/api/keepalive` every day at 03:00 UTC (noon in
+Seoul). The route runs one small read against the table, which counts as
+activity.
+
+Set `CRON_SECRET` on the Vercel project so only Vercel's cron can call that
+route. If the project does pause anyway, restore it from the Supabase dashboard
+(or ask Claude to); nothing is lost while it is paused.
+
 ## Commands
 
 ```bash
